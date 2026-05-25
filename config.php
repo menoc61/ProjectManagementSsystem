@@ -1,36 +1,24 @@
 <?php
-$host = "localhost";
-$user = "root";
-$password = "";
-$database = "GestionProjetsEntreprise";
+declare(strict_types=1);
 
-$conn = mysqli_connect($host, $user, $password, $database);
+require_once __DIR__ . '/app/bootstrap.php';
 
-if (!$conn) {
-    die("Erreur de connexion: " . mysqli_connect_error());
+function isLoggedIn(): bool
+{
+    return is_logged_in();
 }
 
-session_start();
-
-function isLoggedIn() {
-    return isset($_SESSION['user_id']);
+function isAdmin(): bool
+{
+    return current_user_role() === ROLE_ADMIN;
 }
 
-function isAdmin() {
-    return isset($_SESSION['role']) && $_SESSION['role'] == 'admin';
+function redirectIfNotLoggedIn(): void
+{
+    require_login();
 }
 
-function redirectIfNotLoggedIn() {
-    if (!isLoggedIn()) {
-        header("Location: login.php");
-        exit();
-    }
+function redirectIfNotAdmin(): void
+{
+    require_roles([ROLE_ADMIN]);
 }
-
-function redirectIfNotAdmin() {
-    if (!isAdmin()) {
-        header("Location: index.php");
-        exit();
-    }
-}
-?>
