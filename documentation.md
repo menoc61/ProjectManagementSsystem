@@ -1,140 +1,88 @@
-# Documentation de l'Application de Gestion de Projets d'Entreprise
+# Documentation - Gestion des projets d'entreprise
 
-## Introduction
+## Presentation
 
-Cette application de gestion de projets d'entreprise a été développée en PHP/MySQL procédural selon les spécifications fournies. Elle permet de gérer l'ensemble du cycle de vie des projets, depuis la création des clients jusqu'à la facturation et le suivi des règlements.
+Cette application PHP/MySQL permet de gerer les clients, projets, taches, services, personnel, affectations, reglements et utilisateurs d'une entreprise. La version modernisee est alignee sur le MCD adapte et expose tous les acteurs attendus: administrateur, chef de projet, chef de service et personnel.
 
-## Prérequis techniques
-
-- Serveur web (Apache, Nginx, etc.)
-- PHP 7.4 ou supérieur
-- MySQL 5.7 ou supérieur
-- Navigateur web moderne (Chrome, Firefox, Safari, Edge)
-
-## Installation
-
-1. Créez une base de données MySQL nommée `GestionProjetsEntreprise`
-2. Importez le fichier `database.sql` pour créer les tables et insérer les données d'exemple
-3. Configurez les paramètres de connexion à la base de données dans le fichier `config.php`
-4. Placez tous les fichiers sur votre serveur web
-5. Accédez à l'application via votre navigateur
-
-## Structure de l'application
-
-L'application est organisée de manière modulaire avec une structure de répertoires claire :
+## Architecture
 
 ```
-/
-├── assets/              # Ressources statiques (CSS, JS, images)
-├── clients/             # Module de gestion des clients
-├── typesprojet/         # Module de gestion des types de projet
-├── projets/             # Module de gestion des projets
-├── taches/              # Module de gestion des tâches
-├── reglements/          # Module de gestion des règlements
-├── services/            # Module de gestion des services
-├── personnel/           # Module de gestion du personnel
-├── affectations/        # Module de gestion des affectations
-├── utilisateurs/        # Module de gestion des utilisateurs
-├── dashboard/           # Tableau de bord et statistiques
-├── tests/               # Tests de l'application
-├── config.php           # Configuration de la base de données
-├── index.php            # Page d'accueil
-├── login.php            # Page de connexion
-└── logout.php           # Déconnexion
+GestionprojetsEntreprise/
+├── app/                  # Configuration, connexion, auth, helpers, CRUD commun
+├── database/             # Schema MySQL et donnees de demonstration
+├── public/assets/        # CSS et JavaScript applicatifs
+├── clients/              # Module clients
+├── projets/              # Module projets
+├── taches/               # Module taches
+├── reglements/           # Module reglements
+├── services/             # Module services
+├── personnel/            # Module personnel
+├── affectations/         # Module affectations
+├── chefs_projet/         # Module chefs de projet
+├── chefs_service/        # Module chefs de service
+├── utilisateurs/         # Module utilisateurs
+├── dashboard/            # Tableau de bord
+└── tests/                # Controles techniques
 ```
 
-## Fonctionnalités principales
+## Base de donnees
 
-### Authentification et sécurité
-- Système de connexion sécurisé avec hachage des mots de passe
-- Gestion des rôles (administrateur et personnel)
-- Protection des pages contre les accès non autorisés
-- Gestion des sessions
+La base officielle est `GestionProjetsEntreprise`. Les tables principales sont:
 
-### Module CLIENT
-- Liste des clients avec recherche et filtres
-- Création, modification et suppression de clients
-- Vue détaillée avec historique des projets et règlements
-- Export CSV et PDF
+- `CLIENT`
+- `TYPEPROJET`
+- `CHEF_PROJET`
+- `CHEF_SERVICE`
+- `SERVICE`
+- `PERSONNEL`
+- `PROJET`
+- `TACHE`
+- `REGLEMENT`
+- `AFFECTATION`
+- `UTILISATEUR`
 
-### Module TYPE DE PROJET
-- Gestion des différents types de projets
-- Configuration des forfaits et tarifs
+Les reglements sont rattaches aux projets. Les projets sont rattaches aux clients, types de projet et chefs de projet. Les services peuvent etre diriges par un chef de service et les taches peuvent etre rattachees a un service responsable.
 
-### Module PROJET
-- Liste des projets avec recherche et filtres multiples
-- Création, modification et suppression de projets
-- Vue détaillée avec onglets (tâches, finances, statistiques)
-- Calcul automatique de la progression
-- Export CSV et PDF
+## Roles et permissions
 
-### Module TÂCHE
-- Gestion des tâches liées aux projets
-- Suivi des dates clés et des états
-- Affectation du personnel
+- `admin`: acces complet, gestion des utilisateurs et des chefs.
+- `chef_projet`: gestion des projets, types, taches, affectations et reglements.
+- `chef_service`: gestion des services, personnel, taches et affectations.
+- `personnel`: consultation des clients et taches.
 
-### Module RÈGLEMENT
-- Saisie des paiements clients
-- Suivi des règlements par projet
-- Calcul automatique des soldes
+## Comptes de demonstration
 
-### Module SERVICE
-- Gestion des services de l'entreprise
+| Role | Identifiant | Mot de passe |
+|---|---|---|
+| Administrateur | `admin` | `admin123` |
+| Chef de projet | `chefprojet` | `chefprojet123` |
+| Chef de service | `chefservice` | `chefservice123` |
+| Personnel | `personnel` | `personnel123` |
 
-### Module PERSONNEL
-- Gestion des membres du personnel
-- Suivi des affectations aux tâches
+## Securite
 
-### Module AFFECTATION
-- Attribution des tâches au personnel
-- Suivi de la charge de travail
+- Les mots de passe sont stockes avec `password_hash`.
+- La connexion utilise `password_verify`.
+- Les requetes du noyau applicatif passent par des requetes preparees.
+- Les sessions utilisent des cookies `HttpOnly` et `SameSite=Lax`.
+- Les pages sensibles verifient les roles cote serveur.
+- Les sorties HTML passent par un helper d'echappement.
 
-### Module UTILISATEUR
-- Gestion des comptes utilisateurs
-- Attribution des rôles
+## Interface
 
-### Tableau de bord
-- Statistiques globales
-- Graphiques d'évolution
-- Activités récentes
-- Résumé financier
+L'interface utilise Bootstrap 5, FontAwesome et une feuille CSS centralisee. La navigation est partagee par tous les modules et affiche uniquement les sections autorisees pour le role connecte.
 
-## Utilisateurs par défaut
+## Verification
 
-L'application est livrée avec deux utilisateurs par défaut :
+La page `/tests/index.php` controle:
 
-1. **Administrateur**
-   - Email : admin@example.com
-   - Mot de passe : admin123
+- la connexion MySQL;
+- la presence des tables du schema;
+- la disponibilite des roles principaux;
+- les comptes de demonstration requis.
 
-2. **Personnel**
-   - Email : user@example.com
-   - Mot de passe : user123
+Pour verifier la syntaxe PHP:
 
-## Responsive Design
-
-L'application est entièrement responsive et s'adapte à tous les appareils :
-- Ordinateurs de bureau
-- Tablettes
-- Smartphones
-
-## Exports et impressions
-
-Chaque module principal propose des fonctionnalités d'export :
-- Export CSV pour l'analyse des données
-- Export PDF pour l'impression et le partage
-- Impression directe depuis le navigateur
-
-## Tests et compatibilité
-
-Une page de tests est disponible à `/tests/index.php` pour vérifier :
-- La connexion à la base de données
-- L'accès aux tables
-- Le fonctionnement des sessions
-- Les permissions selon les rôles
-- La compatibilité navigateur
-- La responsivité
-
-## Support et maintenance
-
-Cette application a été développée selon les meilleures pratiques de développement PHP procédural, avec un code clair et bien commenté pour faciliter la maintenance future.
+```powershell
+Get-ChildItem -Recurse -Filter *.php | ForEach-Object { & 'C:\laragon\bin\php\php-8.3.30-Win32-vs16-x64\php.exe' -l $_.FullName }
+```

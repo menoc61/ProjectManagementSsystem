@@ -1,39 +1,56 @@
-## Guide d'installation rapide
+# Installation - Gestion des projets d'entreprise
 
-Ce guide vous aidera à installer et configurer rapidement l'application de gestion de projets d'entreprise.
+## Prerequis
 
-### Étape 1 : Préparer la base de données
+- Laragon avec Apache demarre.
+- MySQL demarre.
+- PHP 8.3 disponible dans `C:\laragon\bin\php\php-8.3.30-Win32-vs16-x64\php.exe`.
+- MySQL client disponible dans `C:\laragon\bin\mysql\mysql-8.4.3-winx64\bin\mysql.exe`.
 
-1. Créez une base de données MySQL nommée `GestionProjetsEntreprise`
-2. Importez le fichier `database.sql` pour créer les tables et insérer les données d'exemple
+## Installation rapide
 
-### Étape 2 : Configurer l'application
+1. Placer le dossier dans:
 
-1. Modifiez le fichier `config.php` avec vos paramètres de connexion à la base de données :
-   ```php
-   $servername = "localhost"; // Adresse du serveur MySQL
-   $username = "votre_utilisateur"; // Nom d'utilisateur MySQL
-   $password = "votre_mot_de_passe"; // Mot de passe MySQL
-   $dbname = "GestionProjetsEntreprise"; // Nom de la base de données
-   ```
+```text
+C:\laragon\www\projet soutenace\GestionprojetsEntreprise
+```
 
-### Étape 3 : Déployer l'application
+2. Importer la base:
 
-1. Placez tous les fichiers sur votre serveur web
-2. Assurez-vous que le serveur web a les permissions d'écriture sur les dossiers nécessaires
+```powershell
+& 'C:\laragon\bin\mysql\mysql-8.4.3-winx64\bin\mysql.exe' -uroot -e "SOURCE database/schema.sql; SOURCE database/seed.sql;"
+```
 
-### Étape 4 : Accéder à l'application
+3. Verifier la configuration dans `app/config.php`:
 
-1. Ouvrez votre navigateur et accédez à l'URL de l'application
-2. Connectez-vous avec l'un des comptes par défaut :
-   - **Administrateur** : admin@example.com / admin123
-   - **Personnel** : user@example.com / user123
+```php
+const DB_HOST = 'localhost';
+const DB_USER = 'root';
+const DB_PASSWORD = '';
+const DB_NAME = 'GestionProjetsEntreprise';
+```
 
-### Étape 5 : Vérifier l'installation
+4. Ouvrir l'application:
 
-1. Accédez à la page de tests (`/tests/index.php`) pour vérifier que tout fonctionne correctement
-2. Explorez le tableau de bord pour vous assurer que les données sont correctement affichées
+```text
+http://localhost/projet%20soutenace/GestionprojetsEntreprise/login.php
+```
 
-### Besoin d'aide ?
+## Comptes par defaut
 
-Consultez la documentation complète (`documentation.md`) pour plus de détails sur l'utilisation et la maintenance de l'application.
+- Administrateur: `admin` / `admin123`
+- Chef de projet: `chefprojet` / `chefprojet123`
+- Chef de service: `chefservice` / `chefservice123`
+- Personnel: `personnel` / `personnel123`
+
+## Tests apres installation
+
+1. Se connecter avec le compte `admin`.
+2. Ouvrir `/tests/index.php`.
+3. Verifier que tous les controles sont au vert.
+4. Tester la creation d'un client, d'un projet, d'une tache, d'un reglement et d'une affectation.
+5. Tester les connexions chef de projet, chef de service et personnel.
+
+## Reinitialiser la base
+
+La commande d'import supprime et recree les tables de `GestionProjetsEntreprise`. Sauvegarder les donnees de production avant de la lancer.

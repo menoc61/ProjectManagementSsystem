@@ -1,42 +1,29 @@
-# Liste des tâches pour le développement de l'application de gestion de projets
+# Todo - Gestion des projets d'entreprise
 
-## Analyse et préparation
-- [x] Lire et comprendre les exigences du projet
-- [x] Analyser en détail les contraintes techniques
-- [x] Comprendre la structure de la base de données requise
+## Termine
 
-## Développement de la base de données
-- [x] Créer le script SQL pour la structure de la base de données
-- [x] Ajouter les données d'exemple pour toutes les tables
-- [ ] Tester le script SQL pour s'assurer qu'il fonctionne correctement
+- [x] Aligner le schema MySQL sur le MCD adapte.
+- [x] Ajouter les tables `CHEF_PROJET` et `CHEF_SERVICE`.
+- [x] Rattacher les reglements aux projets.
+- [x] Creer les roles `admin`, `chef_projet`, `chef_service`, `personnel`.
+- [x] Securiser l'authentification avec `password_hash` et `password_verify`.
+- [x] Centraliser la connexion MySQL, les helpers, le layout et le CRUD.
+- [x] Moderniser l'interface avec Bootstrap 5 et FontAwesome.
+- [x] Ajouter les modules chefs de projet et chefs de service.
+- [x] Ajouter une page de tests techniques.
+- [x] Reecrire la documentation et le guide d'installation en francais.
 
-## Configuration et authentification
-- [x] Créer le fichier config.php pour la connexion à la base de données
-- [x] Développer la page de connexion (login.php) avec layout 2 colonnes
-- [x] Implémenter le système d'authentification avec rôles (admin, personnel)
-- [x] Créer la page de déconnexion (logout.php)
-- [x] Mettre en place le système de session
+## A verifier manuellement
 
-## Développement des modules fonctionnels
-- [x] Module CLIENT (CRUD, recherche, export, impression)
-- [x] Module TYPE DE PROJET (CRUD, gestion des forfaits)
-- [x] Module PROJET (CRUD, associations, états, statistiques, export)
-- [x] Module TÂCHE (gestion des tâches, dates clés, états)
-- [x] Module RÈGLEMENT (saisie des paiements, statistiques, export)
-- [x] Module SERVICE (CRUD)
-- [x] Module PERSONNEL (CRUD, associations, export)
-- [x] Module AFFECTATION (attribution des tâches, statistiques)
-- [x] Module UTILISATEUR (gestion des utilisateurs et rôles)
+- [ ] Connexion Apache depuis `http://localhost/GestionprojetsEntreprise/login.php`.
+- [ ] CRUD complet de chaque module avec le compte admin.
+- [ ] Restrictions d'acces pour chef de projet, chef de service et personnel.
+- [ ] Exports CSV depuis les listes.
+- [ ] Responsive desktop, tablette et mobile.
 
-## Tableau de bord (Dashboard)
-- [x] Développer les statistiques pour le tableau de bord
-- [x] Créer l'interface du tableau de bord
-- [x] Implémenter les graphiques et visualisations
+## Ameliorations futures
 
-## Finalisation et tests
-- [x] Vérifier la responsivité de l'application sur différents appareils
-- [x] Créer une page de tests pour vérifier les fonctionnalités
-- [ ] Tester toutes les fonctionnalités CRUD
-- [ ] Tester les exports CSV/PDF
-- [ ] Vérifier les accès selon les rôles
-- [ ] Préparer les livrables finaux
+- [ ] Ajouter des exports PDF reels avec une bibliotheque dediee.
+- [ ] Ajouter une recherche avancee par periode et statut sur projets/taches/reglements.
+- [ ] Ajouter un journal d'audit des actions sensibles.
+- [ ] Ajouter des tests end-to-end automatises.
