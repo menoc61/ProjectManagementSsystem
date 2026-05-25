@@ -111,6 +111,82 @@ function entity_display_value(string $module, string $field, mixed $value): stri
     return e((string)$value);
 }
 
+function module_insights(string $module): array
+{
+    return match ($module) {
+        'projets' => [
+            'title' => 'Repartition des projets',
+            'items' => array_map(
+                fn(array $row) => ['label' => strip_tags(project_status_label($row['EtatProjet'])), 'value' => (int)$row['total']],
+                db_all('SELECT EtatProjet, COUNT(*) total FROM PROJET GROUP BY EtatProjet ORDER BY EtatProjet')
+            ),
+        ],
+        'taches' => [
+            'title' => 'Avancement des taches',
+            'items' => array_map(
+                fn(array $row) => ['label' => strip_tags(task_status_label($row['EtatTache'])), 'value' => (int)$row['total']],
+                db_all('SELECT EtatTache, COUNT(*) total FROM TACHE GROUP BY EtatTache ORDER BY EtatTache')
+            ),
+        ],
+        'reglements' => [
+            'title' => 'Paiements par mode',
+            'items' => array_map(
+                fn(array $row) => ['label' => $row['ModePaiementReglement'] ?: 'Non precise', 'value' => (float)$row['total']],
+                db_all('SELECT ModePaiementReglement, COALESCE(SUM(MontantReglement), 0) total FROM REGLEMENT GROUP BY ModePaiementReglement ORDER BY total DESC')
+            ),
+            'money' => true,
+        ],
+        'personnel' => [
+            'title' => 'Personnel par service',
+            'items' => array_map(
+                fn(array $row) => ['label' => $row['CodeService'] ?: 'Non assigne', 'value' => (int)$row['total']],
+                db_all('SELECT CodeService, COUNT(*) total FROM PERSONNEL GROUP BY CodeService ORDER BY total DESC')
+            ),
+        ],
+        'affectations' => [
+            'title' => 'Charge par personnel',
+            'items' => array_map(
+                fn(array $row) => ['label' => $row['MatriculePersonnel'], 'value' => (int)$row['total']],
+                db_all('SELECT MatriculePersonnel, COUNT(*) total FROM AFFECTATION GROUP BY MatriculePersonnel ORDER BY total DESC LIMIT 6')
+            ),
+        ],
+        default => [],
+    };
+}
+
+function render_module_insights(string $module, int $count): void
+{
+    $insights = module_insights($module);
+    $items = $insights['items'] ?? [];
+    $max = max(array_map(fn(array $item) => (float)$item['value'], $items ?: [['value' => 0]]));
+    ?>
+    <section class="module-insights">
+        <div class="metric-card compact">
+            <span>Total du module</span>
+            <strong><?= e((string)$count) ?></strong>
+        </div>
+        <?php if ($items): ?>
+            <div class="data-card mini-chart">
+                <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
+                    <h2 class="h6 fw-bold mb-0"><?= e($insights['title']) ?></h2>
+                    <i class="fa-solid fa-chart-simple text-primary"></i>
+                </div>
+                <?php foreach ($items as $item): ?>
+                    <?php $width = $max > 0 ? max(6, ((float)$item['value'] / $max) * 100) : 0; ?>
+                    <div class="chart-row">
+                        <div class="chart-label">
+                            <span><?= e((string)$item['label']) ?></span>
+                            <strong><?= !empty($insights['money']) ? format_money($item['value']) : e((string)$item['value']) ?></strong>
+                        </div>
+                        <div class="chart-track"><span style="width: <?= e((string)$width) ?>%"></span></div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </section>
+    <?php
+}
+
 function crud_index(string $module): void
 {
     $entity = get_entity($module);
@@ -130,8 +206,9 @@ function crud_index(string $module): void
     $whereSql = $where ? 'WHERE ' . implode(' AND ', $where) : '';
     $rows = db_all("SELECT * FROM `{$entity['table']}` $whereSql ORDER BY `{$entity['pk']}` DESC", $params);
 
-    render_header($entity['title'], $module . '/index.php');
+    render_header($entity['title'], 'modules/' . $module . '/index.php');
     ?>
+    <?php render_module_insights($module, count($rows)); ?>
     <section class="toolbar-panel">
         <form class="row g-2 align-items-center" method="get">
             <div class="col-md-6">
@@ -224,7 +301,7 @@ function crud_form(string $module, ?string $id = null): void
         }
     }
 
-    render_header(($editing ? 'Modifier ' : 'Ajouter ') . $entity['singular'], $module . '/index.php');
+    render_header(($editing ? 'Modifier ' : 'Ajouter ') . $entity['singular'], 'modules/' . $module . '/index.php');
     ?>
     <section class="data-card form-card">
         <form method="post" class="row g-3">
@@ -255,7 +332,7 @@ function crud_view(string $module, string $id): void
         redirect('index.php');
     }
 
-    render_header('Detail - ' . $entity['singular'], $module . '/index.php');
+    render_header('Detail - ' . $entity['singular'], 'modules/' . $module . '/index.php');
     ?>
     <section class="data-card">
         <div class="detail-header">

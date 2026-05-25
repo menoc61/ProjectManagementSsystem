@@ -36,6 +36,12 @@ const DB_NAME = 'GestionProjetsEntreprise';
 http://localhost/projet%20soutenace/GestionprojetsEntreprise/login.php
 ```
 
+Les modules metier sont accessibles sous `modules/`, par exemple:
+
+```text
+http://localhost/projet%20soutenace/GestionprojetsEntreprise/modules/projets/index.php
+```
+
 ## Comptes par defaut
 
 - Administrateur: `admin` / `admin123`

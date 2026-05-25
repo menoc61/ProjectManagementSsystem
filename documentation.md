@@ -11,16 +11,17 @@ GestionprojetsEntreprise/
 ├── app/                  # Configuration, connexion, auth, helpers, CRUD commun
 ├── database/             # Schema MySQL et donnees de demonstration
 ├── public/assets/        # CSS et JavaScript applicatifs
-├── clients/              # Module clients
-├── projets/              # Module projets
-├── taches/               # Module taches
-├── reglements/           # Module reglements
-├── services/             # Module services
-├── personnel/            # Module personnel
-├── affectations/         # Module affectations
-├── chefs_projet/         # Module chefs de projet
-├── chefs_service/        # Module chefs de service
-├── utilisateurs/         # Module utilisateurs
+├── modules/              # Modules metier regroupes
+│   ├── clients/
+│   ├── projets/
+│   ├── taches/
+│   ├── reglements/
+│   ├── services/
+│   ├── personnel/
+│   ├── affectations/
+│   ├── chefs_projet/
+│   ├── chefs_service/
+│   └── utilisateurs/
 ├── dashboard/            # Tableau de bord
 └── tests/                # Controles techniques
 ```
@@ -71,6 +72,15 @@ Les reglements sont rattaches aux projets. Les projets sont rattaches aux client
 ## Interface
 
 L'interface utilise Bootstrap 5, FontAwesome et une feuille CSS centralisee. La navigation est partagee par tous les modules et affiche uniquement les sections autorisees pour le role connecte.
+
+Chaque role possede une couleur d'accent visuelle afin de distinguer clairement les espaces:
+
+- administrateur: rouge;
+- chef de projet: bleu;
+- chef de service: vert;
+- personnel: violet.
+
+La page de connexion propose une table de roles cliquable qui remplit automatiquement le formulaire de demonstration. Elle inclut aussi un bouton pour afficher ou masquer le mot de passe.
 
 ## Verification
 

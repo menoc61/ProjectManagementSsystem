@@ -113,7 +113,7 @@ render_header('Tableau de bord', 'dashboard/index.php');
                 <p class="text-muted mb-0">Aucune tache en retard.</p>
             <?php endif; ?>
             <?php foreach ($lateTasks as $task): ?>
-                <a class="list-group-item list-group-item-action px-0 border-bottom" href="<?= e(app_url('taches/view.php?id=' . urlencode((string)$task['IdTache']))) ?>">
+                <a class="list-group-item list-group-item-action px-0 border-bottom" href="<?= e(app_url('modules/taches/view.php?id=' . urlencode((string)$task['IdTache']))) ?>">
                     <strong><?= e($task['LibelleTache']) ?></strong>
                     <span class="d-block text-muted"><?= e($task['TitreProjet']) ?> - echeance <?= format_date($task['DateFinTache']) ?></span>
                 </a>

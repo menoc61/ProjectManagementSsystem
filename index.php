@@ -43,7 +43,7 @@ render_header('Accueil', 'index.php');
             <h3 class="h5 fw-bold mb-3">Projets recents</h3>
             <div class="list-group list-group-flush">
                 <?php foreach ($recentProjects as $project): ?>
-                    <a class="list-group-item list-group-item-action px-0" href="<?= e(app_url('projets/view.php?id=' . urlencode((string)$project['IdProjet']))) ?>">
+                    <a class="list-group-item list-group-item-action px-0" href="<?= e(app_url('modules/projets/view.php?id=' . urlencode((string)$project['IdProjet']))) ?>">
                         <div class="d-flex justify-content-between gap-3">
                             <strong><?= e($project['TitreProjet']) ?></strong>
                             <?= project_status_label($project['EtatProjet']) ?>
@@ -59,7 +59,7 @@ render_header('Accueil', 'index.php');
             <h3 class="h5 fw-bold mb-3">Taches a suivre</h3>
             <div class="list-group list-group-flush">
                 <?php foreach ($upcomingTasks as $task): ?>
-                    <a class="list-group-item list-group-item-action px-0" href="<?= e(app_url('taches/view.php?id=' . urlencode((string)$task['IdTache']))) ?>">
+                    <a class="list-group-item list-group-item-action px-0" href="<?= e(app_url('modules/taches/view.php?id=' . urlencode((string)$task['IdTache']))) ?>">
                         <div class="d-flex justify-content-between gap-3">
                             <strong><?= e($task['LibelleTache']) ?></strong>
                             <?= task_status_label($task['EtatTache']) ?>

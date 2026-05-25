@@ -8,6 +8,12 @@ if (is_logged_in()) {
 }
 
 $error = '';
+$demoAccounts = [
+    ['role' => 'Administrateur', 'class' => 'admin', 'username' => 'admin', 'password' => 'admin123', 'desc' => 'Acces complet'],
+    ['role' => 'Chef de projet', 'class' => 'chef-projet', 'username' => 'chefprojet', 'password' => 'chefprojet123', 'desc' => 'Pilotage projets'],
+    ['role' => 'Chef de service', 'class' => 'chef-service', 'username' => 'chefservice', 'password' => 'chefservice123', 'desc' => 'Services et personnel'],
+    ['role' => 'Personnel', 'class' => 'personnel', 'username' => 'personnel', 'password' => 'personnel123', 'desc' => 'Consultation operationnelle'],
+];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim((string)($_POST['username'] ?? ''));
@@ -58,14 +64,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <div>
                     <label class="form-label" for="password">Mot de passe</label>
-                    <input class="form-control form-control-lg" id="password" type="password" name="password" required autocomplete="current-password">
+                    <div class="password-control">
+                        <input class="form-control form-control-lg" id="password" type="password" name="password" required autocomplete="current-password">
+                        <button class="btn btn-outline-secondary" type="button" data-toggle-password="#password" aria-label="Afficher ou masquer le mot de passe">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
                 <button class="btn btn-primary btn-lg" type="submit">
                     <i class="fa-solid fa-right-to-bracket"></i> Se connecter
                 </button>
             </form>
-            <div class="small text-muted mt-4">
-                Comptes de test: admin/admin123, chefprojet/chefprojet123, chefservice/chefservice123, personnel/personnel123.
+            <div class="login-roles mt-4">
+                <p class="small fw-bold text-muted mb-2">Cliquez sur un role pour remplir le formulaire.</p>
+                <div class="table-responsive">
+                    <table class="table align-middle role-login-table">
+                        <thead><tr><th>Role</th><th>Identifiant</th><th>Acces</th></tr></thead>
+                        <tbody>
+                        <?php foreach ($demoAccounts as $account): ?>
+                            <tr class="role-option role-option-<?= e($account['class']) ?>" data-username="<?= e($account['username']) ?>" data-password="<?= e($account['password']) ?>">
+                                <td><span class="role-dot"></span><?= e($account['role']) ?></td>
+                                <td><code><?= e($account['username']) ?></code></td>
+                                <td><?= e($account['desc']) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </main>
@@ -75,5 +100,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <h2 class="display-6 fw-bold">Suivi centralise des projets, equipes et paiements.</h2>
         </div>
     </aside>
+    <script src="<?= e(app_url('public/assets/js/app.js')) ?>"></script>
 </body>
 </html>

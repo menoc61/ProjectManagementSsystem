@@ -7,6 +7,7 @@
     --app-accent: #1463ff;
     --app-success: #11845b;
     --app-border: #d8e0ec;
+    --role-accent: var(--app-accent);
 }
 
 * {
@@ -52,7 +53,7 @@ body {
     height: 40px;
     place-items: center;
     border-radius: 8px;
-    background: var(--app-accent);
+    background: var(--role-accent);
 }
 
 .app-sidebar .nav-link {
@@ -73,7 +74,7 @@ body {
 .app-sidebar .nav-link:hover,
 .app-sidebar .nav-link.active {
     color: #fff;
-    background: rgba(255, 255, 255, .11);
+    background: color-mix(in srgb, var(--role-accent) 34%, transparent);
 }
 
 .app-main {
@@ -194,7 +195,64 @@ body {
     place-items: center;
     border-radius: 8px;
     color: #fff;
-    background: var(--app-accent);
+    background: var(--role-accent);
+}
+
+.role-admin {
+    --role-accent: #d92d20;
+}
+
+.role-chef_projet {
+    --role-accent: #1463ff;
+}
+
+.role-chef_service {
+    --role-accent: #07847e;
+}
+
+.role-personnel {
+    --role-accent: #6f3cc3;
+}
+
+.module-insights {
+    display: grid;
+    grid-template-columns: minmax(220px, 280px) 1fr;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.metric-card.compact {
+    min-height: 100%;
+}
+
+.mini-chart {
+    padding: 16px;
+}
+
+.chart-row + .chart-row {
+    margin-top: 12px;
+}
+
+.chart-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 13px;
+}
+
+.chart-track {
+    height: 9px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e8eef7;
+}
+
+.chart-track span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--role-accent), #11845b);
 }
 
 .metric-card strong {
@@ -238,6 +296,69 @@ body {
     display: grid;
     grid-template-columns: minmax(320px, 560px) 1fr;
     background: #101828;
+}
+
+.password-control {
+    display: grid;
+    grid-template-columns: 1fr 52px;
+    gap: 8px;
+}
+
+.role-login-table {
+    margin-bottom: 0;
+    font-size: 14px;
+}
+
+.role-login-table tbody tr {
+    cursor: pointer;
+    transition: background .18s ease, transform .18s ease;
+}
+
+.role-login-table tbody tr:hover {
+    background: #f1f6ff;
+    transform: translateX(3px);
+}
+
+.role-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 8px;
+    border-radius: 999px;
+    background: var(--role-color, var(--app-accent));
+}
+
+.role-option-admin {
+    --role-color: #d92d20;
+}
+
+.role-option-chef-projet {
+    --role-color: #1463ff;
+}
+
+.role-option-chef-service {
+    --role-color: #07847e;
+}
+
+.role-option-personnel {
+    --role-color: #6f3cc3;
+}
+
+.app-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 32px;
+    padding: 18px 0 0;
+    color: var(--app-muted);
+    border-top: 1px solid var(--app-border);
+}
+
+.app-footer a {
+    color: var(--role-accent);
+    font-weight: 800;
+    text-decoration: none;
 }
 
 @media print {
@@ -293,11 +414,59 @@ body {
         flex-direction: column;
     }
 
+    .module-insights {
+        grid-template-columns: 1fr;
+    }
+
+    .user-chip {
+        align-items: flex-start;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .app-main {
+        padding: 18px;
+    }
+
     .login-page {
         grid-template-columns: 1fr;
     }
 
     .login-art {
         min-height: 240px;
+        padding: 30px;
+    }
+
+    .login-panel {
+        padding: 26px;
+    }
+
+    .app-footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 576px) {
+    .app-sidebar {
+        padding: 16px 12px;
+    }
+
+    .app-sidebar .nav {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .app-sidebar .nav-link {
+        min-height: 46px;
+        font-size: 13px;
+    }
+
+    .topbar h1 {
+        font-size: 23px;
+    }
+
+    .metric-card strong {
+        font-size: 22px;
     }
 }
