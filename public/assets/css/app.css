@@ -207,11 +207,59 @@ body {
     color: var(--app-muted);
 }
 
+.btn {
+    border-radius: 8px;
+    font-weight: 700;
+}
+
+.form-control,
+.form-select {
+    border-radius: 8px;
+    border-color: var(--app-border);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--app-accent);
+    box-shadow: 0 0 0 .2rem rgba(20, 99, 255, .14);
+}
+
+.badge {
+    border-radius: 6px;
+    font-weight: 800;
+}
+
+.alert {
+    border-radius: 8px;
+}
+
 .login-page {
     min-height: 100vh;
     display: grid;
     grid-template-columns: minmax(320px, 560px) 1fr;
     background: #101828;
+}
+
+@media print {
+    .app-sidebar,
+    .topbar .user-chip,
+    .toolbar-panel,
+    .action-buttons {
+        display: none !important;
+    }
+
+    .app-shell {
+        display: block;
+    }
+
+    .app-main {
+        padding: 0;
+    }
+
+    .data-card,
+    .metric-card {
+        box-shadow: none;
+    }
 }
 
 .login-panel {
