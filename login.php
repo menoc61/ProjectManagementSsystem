@@ -1,106 +1,79 @@
 <?php
-require_once 'config.php';
+declare(strict_types=1);
+
+require_once __DIR__ . '/app/bootstrap.php';
+
+if (is_logged_in()) {
+    redirect(app_url('dashboard/index.php'));
+}
 
 $error = '';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    
-    $sql = "SELECT * FROM UTILISATEUR WHERE NomUtilisateur = '$username'";
-    $result = mysqli_query($conn, $sql);
-    
-    if (mysqli_num_rows($result) == 1) {
-        $row = mysqli_fetch_assoc($result);
-        if (password_verify($password, $row['MotDePasse'])) {
-            $_SESSION['user_id'] = $row['IdUtilisateur'];
-            $_SESSION['username'] = $row['NomUtilisateur'];
-            $_SESSION['role'] = $row['Role'];
-            
-            if ($row['Role'] == 'admin') {
-                header("Location: dashboard/index.php");
-            } else {
-                header("Location: index.php");
-            }
-            exit();
-        } else {
-            $error = "Mot de passe incorrect";
-        }
-    } else {
-        $error = "Nom d'utilisateur non trouvé";
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = trim((string)($_POST['username'] ?? ''));
+    $password = (string)($_POST['password'] ?? '');
+
+    $user = db_one(
+        'SELECT * FROM UTILISATEUR WHERE NomUtilisateur = ? OR EmailUtilisateur = ? LIMIT 1',
+        [$username, $username]
+    );
+
+    if ($user && password_verify($password, $user['MotDePasse'])) {
+        login_user($user);
+        redirect(app_url('dashboard/index.php'));
     }
+
+    $error = "Identifiants incorrects. Verifiez votre nom d'utilisateur et votre mot de passe.";
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion - Gestion de Projets</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            height: 100vh;
-            background-color: #f8f9fa;
-        }
-        .login-container {
-            height: 100%;
-        }
-        .login-image {
-            background: url('assets/img/login.jpg') center/cover no-repeat;
-            height: 100%;
-        }
-        .login-form {
-            padding: 2rem;
-        }
-        .login-title {
-            margin-bottom: 2rem;
-            color: #0d6efd;
-        }
-        @media (max-width: 767.98px) {
-            .login-image {
-                height: 200px;
-            }
-        }
-    </style>
+    <title>Connexion - <?= e(APP_NAME) ?></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+    <link href="<?= e(app_url('public/assets/css/app.css')) ?>" rel="stylesheet">
 </head>
-<body>
-    <div class="container-fluid h-100 p-0">
-        <div class="row login-container g-0">
-            <div class="col-md-6 login-image d-none d-md-block"></div>
-            <div class="col-md-6 d-flex align-items-center">
-                <div class="login-form w-100">
-                    <h1 class="login-title text-center">Gestion de Projets</h1>
-                    
-                    <?php if($error): ?>
-                    <div class="alert alert-danger" role="alert">
-                        <?php echo $error; ?>
-                    </div>
-                    <?php endif; ?>
-                    
-                    <form method="post" action="login.php">
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Nom d'utilisateur</label>
-                            <input type="text" class="form-control" id="username" name="username" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Mot de passe</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">Se connecter</button>
-                        </div>
-                    </form>
-                    
-                    <div class="mt-4 text-center">
-                        <p class="text-muted">Application de gestion de projets d'entreprise</p>
-                    </div>
+<body class="login-page">
+    <main class="login-panel">
+        <div class="w-100">
+            <div class="brand text-dark mb-4">
+                <span class="brand-icon"><i class="fa-solid fa-layer-group"></i></span>
+                <span>Gestion Projets</span>
+            </div>
+            <p class="eyebrow">Connexion securisee</p>
+            <h1 class="fw-bold mb-2">Pilotez vos projets avec precision.</h1>
+            <p class="text-muted mb-4">Accedez aux clients, projets, taches, reglements et affectations selon votre role.</p>
+
+            <?php if ($error): ?>
+                <div class="alert alert-danger"><?= e($error) ?></div>
+            <?php endif; ?>
+
+            <form method="post" class="vstack gap-3">
+                <div>
+                    <label class="form-label" for="username">Nom d'utilisateur ou email</label>
+                    <input class="form-control form-control-lg" id="username" name="username" required autocomplete="username">
                 </div>
+                <div>
+                    <label class="form-label" for="password">Mot de passe</label>
+                    <input class="form-control form-control-lg" id="password" type="password" name="password" required autocomplete="current-password">
+                </div>
+                <button class="btn btn-primary btn-lg" type="submit">
+                    <i class="fa-solid fa-right-to-bracket"></i> Se connecter
+                </button>
+            </form>
+            <div class="small text-muted mt-4">
+                Comptes de test: admin/admin123, chefprojet/chefprojet123, chefservice/chefservice123, personnel/personnel123.
             </div>
         </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    </main>
+    <aside class="login-art">
+        <div>
+            <p class="eyebrow text-white-50">Application professionnelle</p>
+            <h2 class="display-6 fw-bold">Suivi centralise des projets, equipes et paiements.</h2>
+        </div>
+    </aside>
 </body>
 </html>

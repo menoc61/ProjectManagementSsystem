@@ -1,10 +1,6 @@
 <?php
-require_once 'config.php';
+declare(strict_types=1);
 
-session_start();
-session_unset();
-session_destroy();
-
-header("Location: login.php");
-exit();
-?>
+require_once __DIR__ . '/app/bootstrap.php';
+logout_user();
+redirect(app_url('login.php'));
