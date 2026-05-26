@@ -71,7 +71,7 @@ Les reglements sont rattaches aux projets. Les projets sont rattaches aux client
 
 ## Interface
 
-L'interface utilise Bootstrap 5, FontAwesome et une feuille CSS centralisee. La navigation est partagee par tous les modules et affiche uniquement les sections autorisees pour le role connecte.
+L'interface utilise Bootstrap 5, FontAwesome (installe localement) et une feuille CSS centralisee. La navigation est partagee par tous les modules et affiche uniquement les sections autorisees pour le role connecte.
 
 Chaque role possede une couleur d'accent visuelle afin de distinguer clairement les espaces:
 
